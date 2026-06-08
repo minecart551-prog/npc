@@ -1,0 +1,27 @@
+pluginManagement {
+    repositories {
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'QuiltFlower'
+            url = 'https://server.bbkr.space/artifactory/libs-release/'
+        }
+        maven {
+            name = 'Sponge Snapshots'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+        maven {
+            name = 'Sleeping Town'
+            url = 'https://repo.sleeping.town/'
+            content {
+                includeGroup 'agency.highlysuspect'
+                includeGroup 'agency.highlysuspect.minivan'
+            }
+        }
+        
+        gradlePluginPortal()
+    }
+}
+include('libs')

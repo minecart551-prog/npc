@@ -1,0 +1,1 @@
+After git clone call git submodule update --init --recursive
