@@ -21,9 +21,10 @@ public class CustomGuiLabel extends AbstractWidget implements IGuiComponent {
     private CustomGuiLabelWrapper component;
     private int id;
     private GuiCustom parent;
+    private String[] lines;
 
     public CustomGuiLabel(GuiCustom parent, CustomGuiLabelWrapper component) {
-        super(component.getPosX(), component.getPosY(), component.getWidth(), component.getHeight(), Component.translatable(component.getText()));
+        super(component.getPosX(), component.getPosY(), component.getWidth(), component.getHeight(), Component.literal(component.getText()));
         this.component = component;
         this.parent = parent;
         init();
@@ -38,7 +39,8 @@ public class CustomGuiLabel extends AbstractWidget implements IGuiComponent {
         this.height = (component.getHeight());
         this.active = component.getEnabled() && component.getVisible();
         this.visible = component.getVisible();
-        setMessage(Component.translatable(component.getText()));
+        setMessage(Component.literal(component.getText()));
+        this.lines = component.getText().split("\n");
     }
 
     @Override
@@ -50,12 +52,17 @@ public class CustomGuiLabel extends AbstractWidget implements IGuiComponent {
         matrixStack.pushPose();
         matrixStack.translate(0, 0, id);
         matrixStack.scale(component.getScale(), component.getScale(), 0);
+        Font font = Minecraft.getInstance().font;
+        int lineHeight = font.lineHeight + 2;
         boolean hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
-        if (this.component.getCentered()) {
-            graphics.drawString(Minecraft.getInstance().font, getMessage(), (int)((getX() + (width - Minecraft.getInstance().font.width(getMessage())) / 2f)/component.getScale()), (int) (getY()/component.getScale()), this.component.getColor());
-        }
-        else {
-            graphics.drawString(Minecraft.getInstance().font, getMessage(), (int) (getX()/component.getScale()), (int) (getY()/component.getScale()), this.component.getColor());
+        for (int i = 0; i < lines.length; i++) {
+            Component line = Component.literal(lines[i]);
+            int yPos = (int) (getY() / component.getScale()) + i * lineHeight;
+            if (this.component.getCentered()) {
+                graphics.drawString(font, line, (int)((getX() + (width - font.width(line)) / 2f) / component.getScale()), yPos, this.component.getColor());
+            } else {
+                graphics.drawString(font, line, (int) (getX() / component.getScale()), yPos, this.component.getColor());
+            }
         }
         if(hovered && component.hasHoverText()) {
             this.parent.hoverText = component.getHoverTextList();
@@ -70,7 +77,8 @@ public class CustomGuiLabel extends AbstractWidget implements IGuiComponent {
 
 
     public void setText(String s) {
-        setMessage(Component.translatable(s));
+        setMessage(Component.literal(s));
+        this.lines = s.split("\n");
     }
 
     @Override
