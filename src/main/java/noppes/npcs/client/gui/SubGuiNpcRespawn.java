@@ -37,8 +37,10 @@ public class SubGuiNpcRespawn extends GuiBasic implements ITextfieldListener {
 		GuiButtonNop button = (GuiButtonNop) guibutton;
 		if(button.id == 0){
 			stats.spawnCycle = button.getValue();
-			if(stats.spawnCycle == 3 || stats.spawnCycle == 4)
+			if(stats.spawnCycle == 3)
 				stats.respawnTime = 0;
+			else if(stats.spawnCycle == 4)
+				stats.respawnTime = 20;
 			else
 				stats.respawnTime = 20;
 			init();

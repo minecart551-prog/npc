@@ -993,7 +993,7 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 
 	@Override
 	public void tickDeath(){
-		if(stats.spawnCycle == 3 || stats.spawnCycle == 4){
+		if(stats.spawnCycle == 3){
 			super.tickDeath();
 			return;
 		}
@@ -1005,7 +1005,7 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 			remove(RemovalReason.KILLED);
 		}
 		if (killedtime < System.currentTimeMillis()) {
-			if (stats.spawnCycle == 0 || (this.level().isDay() && stats.spawnCycle == 1) || (!this.level().isDay() && stats.spawnCycle == 2)) {
+			if (stats.spawnCycle == 0 || (this.level().isDay() && stats.spawnCycle == 1) || (!this.level().isDay() && stats.spawnCycle == 2) || stats.spawnCycle == 4) {
 				reset();
 			}
 		}
@@ -1277,7 +1277,7 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 		ejectPassengers();
 		stopRiding();
 		
-		if(level().isClientSide || stats.spawnCycle == 3 || stats.spawnCycle == 4){
+		if(level().isClientSide || stats.spawnCycle == 3){
 			//this.spawnExplosionParticle();
 			delete();
 		}

@@ -39,7 +39,6 @@ public class EntityPersistentData implements IEntityPersistentData {
     @Inject(method = "load",at=@At("TAIL"))
     public void read(CompoundTag compound, CallbackInfo ci){
         if(compound.contains("CNPC_persistantData")) {
-            // Create a copy instead of a reference to prevent cloned NPCs from sharing data
             CNPC_tag = compound.getCompound("CNPC_persistantData").copy();
             MarkData.get((LivingEntity)(Object)this);
         }

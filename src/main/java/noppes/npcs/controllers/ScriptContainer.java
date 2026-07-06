@@ -169,16 +169,9 @@ public class ScriptContainer {
 		    }
 		}
 	}
-	
-	/**
-	 * Cleans up the ScriptEngine and returns it to the pool.
-	 * Should be called when the NPC is unloaded/removed.
-	 */
+
 	public void cleanup() {
-		if (engine != null) {
-			ScriptController.Instance.returnEngine(handler.getLanguage(), engine);
-			engine = null;
-		}
+		engine = null;
 		currentScriptLanguage = null;
 		init = false;
 		errored = false;
@@ -205,11 +198,6 @@ public class ScriptContainer {
 	public void setEngine(String scriptLanguage) {
 		if(currentScriptLanguage != null && currentScriptLanguage.equals(scriptLanguage))
 			return;
-		// Return old engine to pool before getting a new one
-		if (engine != null) {
-			ScriptController.Instance.returnEngine(currentScriptLanguage, engine);
-			engine = null;
-		}
 		engine = ScriptController.Instance.getEngineByName(scriptLanguage);
 		if(engine == null){
 			errored = true;
