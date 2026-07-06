@@ -18,12 +18,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ScriptController {
 	
@@ -42,6 +38,10 @@ public class ScriptController {
 	
 	private boolean loaded = false;
 	public boolean shouldSave = false;
+	
+	// Engine pool to prevent memory leaks from unlimited ScriptEngine creation
+	private final Map<String, Queue<ScriptEngine>> enginePool = new HashMap<>();
+	private static final int MAX_POOL_SIZE_PER_LANGUAGE = 20;
 	
 	public ScriptController(){
 		loaded = false;
@@ -265,7 +265,35 @@ public class ScriptController {
 		ScriptEngineFactory fac = factories.get(language.toLowerCase());
 		if(fac == null)
 			return null;
+		
+		// Try to get an engine from the pool first
+		Queue<ScriptEngine> pool = enginePool.get(language.toLowerCase());
+		if (pool != null && !pool.isEmpty()) {
+			ScriptEngine engine = pool.poll();
+			if (engine != null) {
+				return engine;
+			}
+		}
+		
+		// Create a new engine if pool is empty
 		return fac.getScriptEngine();
+	}
+	
+	/**
+	 * Returns a ScriptEngine to the pool for reuse.
+	 * This prevents unlimited engine creation and the associated memory leak.
+	 */
+	public void returnEngine(String language, ScriptEngine engine) {
+		if (engine == null) return;
+		
+		String langKey = language.toLowerCase();
+		Queue<ScriptEngine> pool = enginePool.computeIfAbsent(langKey, k -> new ConcurrentLinkedQueue<>());
+		
+		// Limit pool size to prevent excessive memory usage
+		if (pool.size() < MAX_POOL_SIZE_PER_LANGUAGE) {
+			pool.offer(engine);
+		}
+		// If pool is full, let the engine be garbage collected
 	}
 
 	public ListTag nbtLanguages() {

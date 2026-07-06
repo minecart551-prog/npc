@@ -1262,6 +1262,12 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 	
 	@Override
 	public void remove(Entity.RemovalReason reason) {
+		// Always cleanup script engines when NPC is removed, regardless of reason
+		if (level() != null && !level().isClientSide) {
+			for (noppes.npcs.controllers.ScriptContainer sc : script.getScripts()) {
+				sc.cleanup();
+			}
+		}
 		if(reason != RemovalReason.KILLED){
 			super.remove(reason);
 			return;
@@ -1295,6 +1301,10 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 		VisibilityController.instance.remove(this);
 		role.delete();
 		job.delete();
+		// Return ScriptEngines to pool to prevent memory leaks
+		for (noppes.npcs.controllers.ScriptContainer sc : script.getScripts()) {
+			sc.cleanup();
+		}
 		super.remove(RemovalReason.DISCARDED);
 	}
 	
