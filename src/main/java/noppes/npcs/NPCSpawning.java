@@ -23,6 +23,7 @@ import net.minecraft.world.level.entity.EntitySectionStorage;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.AABB;
+import noppes.npcs.controllers.NaturalSpawnCache;
 import noppes.npcs.controllers.SpawnController;
 import noppes.npcs.controllers.data.SpawnData;
 import noppes.npcs.entity.EntityCustomNpc;
@@ -38,8 +39,13 @@ public class NPCSpawning {
 	
 	
     public static void findChunksForSpawning(ServerLevel level){
-    	if(SpawnController.instance.data.isEmpty() || level.getGameTime() % 400L != 0L)
-    		return;
+    	if(SpawnController.instance.data.isEmpty() || level.getGameTime() % 400L != 0L) {
+    	    // Even if we skip natural spawning, check if cached NPCs need restoring
+    	    if (level.getGameTime() % 100L == 0L) {
+    	        NaturalSpawnCache.instance.checkNearbyPlayers(level);
+    	    }
+    	    return;
+    	}
 
         EntitySectionStorage<Entity> sectionManager = ((PersistentEntitySectionManagerMixin<Entity>)((ServerLevelMixin)level).entityManager()).sectionStorage();
 

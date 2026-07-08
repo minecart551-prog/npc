@@ -170,13 +170,6 @@ public class ScriptContainer {
 		}
 	}
 
-	public void cleanup() {
-		engine = null;
-		currentScriptLanguage = null;
-		init = false;
-		errored = false;
-	}
-
 	public void appandConsole(String message) {
 		if(message == null || message.isEmpty())
 			return;

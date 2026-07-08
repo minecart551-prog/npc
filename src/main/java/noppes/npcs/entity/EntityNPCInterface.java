@@ -1145,10 +1145,6 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 		this.chasingPosY += d1 * 0.25D;
 	}
 
-	@Override
-	public boolean removeWhenFarAway(double distanceToPlayer) {
-		return stats != null &&  stats.spawnCycle == 4;
-	}
 
 	@Override
 	public ItemStack getMainHandItem() {
@@ -1261,12 +1257,15 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
     }
 	
 	@Override
+	public boolean removeWhenFarAway(double distanceToPlayer) {
+		return stats != null && stats.spawnCycle == 4;
+	}
+
+	@Override
 	public void remove(Entity.RemovalReason reason) {
-		// Always cleanup script engines when NPC is removed, regardless of reason
-		if (level() != null && !level().isClientSide) {
-			for (noppes.npcs.controllers.ScriptContainer sc : script.getScripts()) {
-				sc.cleanup();
-			}
+		// Cache spawnCycle 4 NPC data before they're removed by Minecraft's despawn system
+		if (reason != RemovalReason.KILLED && stats != null && stats.spawnCycle == 4 && level() != null && !level().isClientSide) {
+			noppes.npcs.controllers.NaturalSpawnCache.instance.cacheNpc(this);
 		}
 		if(reason != RemovalReason.KILLED){
 			super.remove(reason);
@@ -1301,10 +1300,6 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 		VisibilityController.instance.remove(this);
 		role.delete();
 		job.delete();
-		// Return ScriptEngines to pool to prevent memory leaks
-		for (noppes.npcs.controllers.ScriptContainer sc : script.getScripts()) {
-			sc.cleanup();
-		}
 		super.remove(RemovalReason.DISCARDED);
 	}
 	
