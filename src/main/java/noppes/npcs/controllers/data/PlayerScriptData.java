@@ -66,7 +66,7 @@ public class PlayerScriptData implements IScriptHandler{
 	public void runScript(EnumScriptType type, Event event){
 		if(!isEnabled())
 			return;
-		if(ScriptController.Instance.lastLoaded > lastInited || ScriptController.Instance.lastPlayerUpdate > lastPlayerUpdate){
+		if(ScriptController.Instance.lastLoaded > lastInited){
 			lastInited = ScriptController.Instance.lastLoaded;
 			errored.clear();
 			if(player != null) {
@@ -77,7 +77,6 @@ public class PlayerScriptData implements IScriptHandler{
 					scripts.add(s);
 				}
 			}
-			lastPlayerUpdate = ScriptController.Instance.lastPlayerUpdate;
 			if(type != EnumScriptType.INIT)
 				EventHooks.onPlayerInit(this);
 		}
@@ -108,7 +107,7 @@ public class PlayerScriptData implements IScriptHandler{
 
 	@Override
 	public boolean getEnabled() {
-		return ScriptController.Instance.playerScripts.enabled;
+		return enabled;
 	}
 
 	@Override
@@ -118,7 +117,7 @@ public class PlayerScriptData implements IScriptHandler{
 
 	@Override
 	public String getLanguage() {
-		return ScriptController.Instance.playerScripts.scriptLanguage;
+		return scriptLanguage;
 	}
 
 	@Override

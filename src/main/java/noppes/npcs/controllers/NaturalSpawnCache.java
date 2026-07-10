@@ -60,7 +60,6 @@ public class NaturalSpawnCache {
                 npc.level().dimension()
         );
 
-        System.out.println("[NaturalSpawnCache] Caching NPC " + data.debugName + " at " + data.position + " (cache size: " + cache.size() + ")");
         cache.put(data.idHash, data);
     }
 
@@ -88,7 +87,6 @@ public class NaturalSpawnCache {
                         world.random.nextFloat() * 360.0F, 0.0F);
 
                 world.addFreshEntity(npc);
-                System.out.println("[NaturalSpawnCache] Restored NPC " + data.debugName + " at " + data.position);
             }
         } catch (Exception e) {
             System.err.println("[NaturalSpawnCache] Failed to restore NPC " + data.debugName + ": " + e.getMessage());
