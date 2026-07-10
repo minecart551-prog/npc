@@ -26,6 +26,7 @@ import noppes.npcs.controllers.VisibilityController;
 import noppes.npcs.controllers.data.Availability;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerQuestData;
+import noppes.npcs.controllers.NaturalSpawnCache;
 import noppes.npcs.entity.data.DataScenes;
 import noppes.npcs.entity.data.DataScenes.SceneContainer;
 import noppes.npcs.entity.data.DataScenes.SceneState;
@@ -43,6 +44,11 @@ public class ServerTickHandler implements ServerTickEvents.StartTick, ServerPlay
 		if(ticks++ >= 20){
 			SchematicController.Instance.updateBuilding();
 			MassBlockController.Update();
+
+			// Every ~1 second (20 ticks), check if any cached NPCs should be restored
+			for(ServerLevel level : server.getAllLevels()){
+				NaturalSpawnCache.instance.checkNearbyPlayers(level);
+			}
 
 			ticks = 0;
 			for(SceneState state : DataScenes.StartedScenes.values()){

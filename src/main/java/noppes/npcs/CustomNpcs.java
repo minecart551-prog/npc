@@ -50,7 +50,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-public class CustomNpcs implements ModInitializer, CommandRegistrationCallback, ServerLifecycleEvents.ServerStarting, ServerLifecycleEvents.ServerStarted {
+public class CustomNpcs implements ModInitializer, CommandRegistrationCallback, ServerLifecycleEvents.ServerStarting, ServerLifecycleEvents.ServerStarted, ServerLifecycleEvents.ServerStopping {
 
     public static final String MODID = "customnpcs";
     public static final String VERSION = "1.20.1";
@@ -225,6 +225,7 @@ public class CustomNpcs implements ModInitializer, CommandRegistrationCallback, 
         Packets.register();
         ServerLifecycleEvents.SERVER_STARTING.register(this);
         ServerLifecycleEvents.SERVER_STARTED.register(this);
+        ServerLifecycleEvents.SERVER_STOPPING.register(this);
         ServerTickEvents.END_SERVER_TICK.register(new SkinEventHandler());
         ServerPlayConnectionEvents.JOIN.register(new SkinEventHandler());
         UseEntityCallback.EVENT.register(new ServerEventsHandler());
@@ -309,6 +310,9 @@ public class CustomNpcs implements ModInitializer, CommandRegistrationCallback, 
                     VisibilityController.instance.onUpdate(playerMP);
                 }
             });
+
+            // Restore any cached NPCs from disk for this dimension
+            NaturalSpawnCache.instance.loadAndRestore(level);
         }
 
         RecipeController.instance.load();
@@ -343,5 +347,11 @@ public class CustomNpcs implements ModInitializer, CommandRegistrationCallback, 
 
         CmdSchematics.names.clear();
         CmdSchematics.names.addAll(SchematicController.Instance.list());
+    }
+
+    @Override
+    public void onServerStopping(MinecraftServer server) {
+        // Save all cached NPC data to disk so it survives server restart
+        NaturalSpawnCache.instance.save();
     }
 }

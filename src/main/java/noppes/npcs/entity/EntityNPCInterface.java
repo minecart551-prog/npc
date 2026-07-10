@@ -1258,13 +1258,13 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 	
 	@Override
 	public boolean removeWhenFarAway(double distanceToPlayer) {
-		return stats != null && stats.spawnCycle == 4;
+		return stats != null && (stats.spawnCycle == 3 || stats.spawnCycle == 4);
 	}
 
 	@Override
 	public void remove(Entity.RemovalReason reason) {
-		// Cache spawnCycle 4 NPC data before they're removed by Minecraft's despawn system
-		if (reason != RemovalReason.KILLED && stats != null && stats.spawnCycle == 4 && level() != null && !level().isClientSide) {
+		// Cache spawnCycle 3/4 NPC data before they're removed by Minecraft's despawn system
+		if (reason != RemovalReason.KILLED && stats != null && (stats.spawnCycle == 3 || stats.spawnCycle == 4) && level() != null && !level().isClientSide) {
 			noppes.npcs.controllers.NaturalSpawnCache.instance.cacheNpc(this);
 		}
 		if(reason != RemovalReason.KILLED){
