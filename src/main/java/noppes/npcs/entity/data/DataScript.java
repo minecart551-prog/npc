@@ -118,4 +118,15 @@ public class DataScript implements IScriptHandler{
 			script.console.clear();
 		}
 	}
+
+	/**
+	 * Disposes all script engines to free memory.
+	 * Called when the NPC is removed from the world.
+	 * Script data is preserved - engines will be re-created on next use.
+	 */
+	public void dispose() {
+		for(ScriptContainer script : getScripts()){
+			script.dispose();
+		}
+	}
 }

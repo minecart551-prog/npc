@@ -950,6 +950,11 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
+		// Dispose script engine before saving to free memory
+		// Engine will be recreated when NPC is loaded back
+		if (stats != null && !isClientSide()) {
+			script.dispose();
+		}
 		super.addAdditionalSaveData(compound);
 		display.save(compound);
 		stats.save(compound);
@@ -1263,9 +1268,15 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 
 	@Override
 	public void remove(Entity.RemovalReason reason) {
-		// Cache spawnCycle 3/4 NPC data before they're removed by Minecraft's despawn system
-		if (reason != RemovalReason.KILLED && stats != null && (stats.spawnCycle == 3 || stats.spawnCycle == 4) && level() != null && !level().isClientSide) {
-			noppes.npcs.controllers.NaturalSpawnCache.instance.cacheNpc(this);
+		if (reason != RemovalReason.KILLED && level() != null && !level().isClientSide) {
+			// Dispose script engines to free memory
+			if (stats != null) {
+				script.dispose();
+			}
+			// Clean up VisibilityController reference to allow GC
+			VisibilityController.instance.remove(this);
+			// Clear tracking set to release player references
+			tracking.clear();
 		}
 		if(reason != RemovalReason.KILLED){
 			super.remove(reason);

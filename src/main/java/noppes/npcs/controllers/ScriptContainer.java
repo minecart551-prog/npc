@@ -12,7 +12,9 @@ import noppes.npcs.shared.client.util.NoppesStringUtils;
 import noppes.npcs.shared.common.CommonUtil;
 import noppes.npcs.shared.common.util.LogWriter;
 
+import javax.script.Bindings;
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -191,6 +193,10 @@ public class ScriptContainer {
 	public void setEngine(String scriptLanguage) {
 		if(currentScriptLanguage != null && currentScriptLanguage.equals(scriptLanguage))
 			return;
+		// Dispose old engine before creating a new one to prevent memory leaks
+		if (engine != null) {
+			dispose();
+		}
 		engine = ScriptController.Instance.getEngineByName(scriptLanguage);
 		if(engine == null){
 			errored = true;
@@ -207,6 +213,31 @@ public class ScriptContainer {
 	
 	public boolean isValid() {
 		return init && !errored;
+	}
+	
+	/**
+	 * Disposes the script engine to free memory.
+	 * Clears all engine bindings to break Nashorn's internal references,
+	 * then drops the engine reference. Script data (fullscript, scripts list, etc.)
+	 * is preserved for re-creation later.
+	 */
+	public void dispose() {
+		if (engine != null) {
+			try {
+				// Clear all bindings to break Nashorn's internal reference chains
+				// This allows the GC to properly collect the engine's memory
+				Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+				if (bindings != null) {
+					bindings.clear();
+				}
+			} catch (Exception e) {
+				// Ignore cleanup errors
+			}
+			engine = null;
+		}
+		currentScriptLanguage = null;
+		init = false;
+		unknownFunctions.clear();
 	}
 
 	private class Dump implements Function<Object, String> {
