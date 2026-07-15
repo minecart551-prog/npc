@@ -1263,7 +1263,7 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 	
 	@Override
 	public boolean removeWhenFarAway(double distanceToPlayer) {
-		return stats != null && (stats.spawnCycle == 3 || stats.spawnCycle == 4);
+		return stats != null && stats.spawnCycle == 4;
 	}
 
 	@Override
