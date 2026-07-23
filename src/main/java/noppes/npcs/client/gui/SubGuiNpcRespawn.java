@@ -17,7 +17,7 @@ public class SubGuiNpcRespawn extends GuiBasic implements ITextfieldListener {
     public void init(){
         super.init();
     	addLabel(new GuiLabel(0,"stats.respawn", guiLeft + 5, guiTop + 35,"guihint.npcrespawn"));
-    	addButton(new GuiButtonBiDirectional(this,0,guiLeft + 122, guiTop + 30, 80, 20, new String[]{"gui.yes","gui.day","gui.night","gui.no","stats.naturally"} ,stats.spawnCycle));
+    	addButton(new GuiButtonBiDirectional(this,0,guiLeft + 122, guiTop + 30, 80, 20, new String[]{"gui.yes","gui.day","gui.night","gui.no","stats.loaded"} ,stats.spawnCycle));
     	if(stats.respawnTime > 0){
     		addLabel(new GuiLabel(3,"gui.time", guiLeft + 5, guiTop + 57,"guihint.npcrespawntime"));
     		addTextField(new GuiTextFieldNop(2,this, guiLeft + 122, guiTop + 53, 50, 18, stats.respawnTime + ""));

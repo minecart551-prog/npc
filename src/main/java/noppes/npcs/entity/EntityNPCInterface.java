@@ -950,9 +950,8 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
-		// Dispose script engine before saving to free memory
-		// Engine will be recreated when NPC is loaded back
-		if (stats != null && !isClientSide()) {
+		// Dispose script engine before saving to free memory (skip for spawnCycle 4 - keep engine loaded)
+		if (stats != null && !isClientSide() && stats.spawnCycle != 4) {
 			script.dispose();
 		}
 		super.addAdditionalSaveData(compound);
@@ -998,7 +997,7 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 
 	@Override
 	public void tickDeath(){
-		if(stats.spawnCycle == 3){
+		if(stats.spawnCycle == 3 || stats.spawnCycle == 4){
 			super.tickDeath();
 			return;
 		}
@@ -1263,14 +1262,14 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 	
 	@Override
 	public boolean removeWhenFarAway(double distanceToPlayer) {
-		return stats != null && stats.spawnCycle == 4;
+		return false;
 	}
 
 	@Override
 	public void remove(Entity.RemovalReason reason) {
 		if (reason != RemovalReason.KILLED && level() != null && !level().isClientSide) {
-			// Dispose script engines to free memory
-			if (stats != null) {
+			// Dispose script engines to free memory (skip for spawnCycle 4 - keep engine loaded)
+			if (stats != null && stats.spawnCycle != 4) {
 				script.dispose();
 			}
 			// Clean up VisibilityController reference to allow GC
@@ -1287,7 +1286,7 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 		ejectPassengers();
 		stopRiding();
 		
-		if(level().isClientSide || stats.spawnCycle == 3){
+		if(level().isClientSide || stats.spawnCycle == 3 || stats.spawnCycle == 4){
 			//this.spawnExplosionParticle();
 			delete();
 		}
