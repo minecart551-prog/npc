@@ -2,6 +2,7 @@ package noppes.npcs.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -41,7 +42,16 @@ public class BlockScriptedDoor extends BlockNpcDoorInterface{
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter worldIn, BlockPos pos, BlockState state) {
-        return new ItemStack(CustomBlocks.scripted_door_item);
+        ItemStack stack = new ItemStack(CustomBlocks.scripted_door_item);
+        BlockPos lowerPos = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
+        TileScriptedDoor tile = (TileScriptedDoor) worldIn.getBlockEntity(lowerPos);
+        if (tile != null) {
+            CompoundTag tag = tile.saveWithoutMetadata();
+            if (!tag.isEmpty()) {
+                stack.addTagElement("BlockEntityTag", tag);
+            }
+        }
+        return stack;
     }
 
 	@Override

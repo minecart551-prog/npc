@@ -154,6 +154,17 @@ public class TileScriptedDoor extends TileDoor implements IScriptBlockHandler{
 	}
 
 	@Override
+	public CompoundTag getUpdateTag(){
+		CompoundTag compound = new CompoundTag();
+		compound.putInt("x", this.worldPosition.getX());
+		compound.putInt("y", this.worldPosition.getY());
+		compound.putInt("z", this.worldPosition.getZ());
+		getNBT(compound);
+		getDoorNBT(compound);
+		return compound;
+	}
+
+	@Override
 	public String noticeString() {
 		BlockPos pos = getBlockPos();
 		return MoreObjects.toStringHelper(this).add("x", pos.getX()).add("y", pos.getY()).add("z", pos.getZ()).toString();

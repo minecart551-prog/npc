@@ -2,6 +2,7 @@ package noppes.npcs.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -55,6 +56,19 @@ public class BlockScripted extends BlockInterface {
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new TileScripted(pos, state);
+	}
+
+	@Override
+	public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+		ItemStack stack = new ItemStack(CustomBlocks.scripted_item);
+		TileScripted tile = (TileScripted) level.getBlockEntity(pos);
+		if (tile != null) {
+			CompoundTag tag = tile.saveWithoutMetadata();
+			if (!tag.isEmpty()) {
+				stack.addTagElement("BlockEntityTag", tag);
+			}
+		}
+		return stack;
 	}
 
     @Override 

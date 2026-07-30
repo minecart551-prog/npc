@@ -253,6 +253,7 @@ public class TileScripted extends TileNpcEntity implements IScriptBlockHandler {
     	compound.putInt("x", this.worldPosition.getX());
     	compound.putInt("y", this.worldPosition.getY());
     	compound.putInt("z", this.worldPosition.getZ());
+    	getNBT(compound);
     	getDisplayNBT(compound);
     	return compound;
     }

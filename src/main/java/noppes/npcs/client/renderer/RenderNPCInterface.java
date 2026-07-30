@@ -122,10 +122,10 @@ public class RenderNPCInterface<T extends EntityNPCInterface, M extends EntityMo
 			matrixScale.mulPose(Axis.ZP.rotationDegrees(getFlipDegrees(npc)));
 			matrixScale.mulPose(Axis.YP.rotationDegrees(270F));
         } 
-        else if(npc.isAlive() && npc.currentAnimation == AnimationType.CRAWL){
+        else if(npc.isAlive() && npc.currentAnimation == AnimationType.CRAWL && npc instanceof EntityCustomNpc customNpc){
 			matrixScale.mulPose(Axis.YP.rotationDegrees(270.0F - f1));
-            float scale = ((EntityCustomNpc)npc).display.getSize() / 5f;
-			matrixScale.translate(-scale +((EntityCustomNpc)npc).modelData.getLegsY() * scale, 0.14f, 0);
+            float scale = customNpc.display.getSize() / 5f;
+			matrixScale.translate(-scale + customNpc.modelData.getLegsY() * scale, 0.14f, 0);
 			matrixScale.mulPose(Axis.ZP.rotationDegrees(270F));
 			matrixScale.mulPose(Axis.YP.rotationDegrees(270F));
         }
@@ -161,7 +161,9 @@ public class RenderNPCInterface<T extends EntityNPCInterface, M extends EntityMo
 				yOffset += 0.14f;
 			}
 			else if(npc.currentAnimation == AnimationType.SIT || npc.isPassenger()){
-				yOffset -= 0.5f - ((EntityCustomNpc)npc).modelData.getLegsY() * 0.8f;
+				if (npc instanceof EntityCustomNpc customNpc) {
+					yOffset -= 0.5f - customNpc.modelData.getLegsY() * 0.8f;
+				}
 			}
 		}
 		xOffset = (xOffset/ 5f) * npc.display.getSize();

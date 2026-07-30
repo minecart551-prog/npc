@@ -92,6 +92,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 	
 	@Override
 	public CompoundTag getMCNbt(){
+		if(!loaded) loadScriptData();
 		CompoundTag compound = super.getMCNbt();
 		getScriptNBT(compound);
 
