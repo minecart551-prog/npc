@@ -1422,6 +1422,9 @@ public abstract class EntityNPCInterface extends PathfinderMob implements Ranged
 				entityitem.discard();
 			}
 		}
+		if (player instanceof ServerPlayer) {
+			((ServerPlayer) player).inventoryMenu.broadcastChanges();
+		}
 	}
 	
 	@Override

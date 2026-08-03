@@ -396,7 +396,9 @@ public class PlayerWrapper<T extends ServerPlayer> extends EntityLivingBaseWrapp
 	@Override
 	public void updatePlayerInventory() {
 		entity.inventoryMenu.broadcastChanges();
-		entity.connection.send(new ClientboundContainerSetSlotPacket(-2, 0, entity.getInventory().selected, entity.getInventory().getItem(entity.getInventory().selected)));
+		for (int i = 0; i < entity.getInventory().getContainerSize(); i++) {
+			entity.connection.send(new ClientboundContainerSetSlotPacket(-2, 0, i, entity.getInventory().getItem(i)));
+		}
 		PlayerQuestData playerdata = getData().questData;
 		playerdata.checkQuestCompletion(entity, QuestType.ITEM);
 	}
