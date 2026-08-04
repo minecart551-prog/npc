@@ -72,12 +72,15 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 
 	@Override
 	public void setTexture(String texture) {
+		String old = getTexture();
 		if(texture == null){
 			this.texture = null;
 		}
 		else{
 			this.texture = new ResourceLocation(texture);
 		}
+		if(!java.util.Objects.equals(texture, old))
+			updateClient = true;
 		saveScriptData();
 	}
 

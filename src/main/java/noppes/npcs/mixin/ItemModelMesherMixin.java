@@ -24,6 +24,7 @@ public class ItemModelMesherMixin {
             ItemScriptedWrapper si = (ItemScriptedWrapper) WrapperNpcAPI.Instance().getIItemStack(item);
             if(si == null)
                 return;
+            si.loadScriptData();
             Item i = null;
             if(si.texture != null){
                 i = BuiltInRegistries.ITEM.get(si.texture);
