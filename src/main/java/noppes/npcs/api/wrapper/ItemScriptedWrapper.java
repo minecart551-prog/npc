@@ -78,6 +78,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		else{
 			this.texture = new ResourceLocation(texture);
 		}
+		saveScriptData();
 	}
 
 	public CompoundTag getScriptNBT(CompoundTag compound) {
@@ -87,6 +88,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		if(texture != null){
 			compound.putString("ScriptTexture", texture.toString());
 		}
+		compound.putLong("LastInited", lastInited);
 		return compound;
 	}
 	
@@ -119,6 +121,9 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 
 		if(compound.contains("ScriptTexture")){
 			this.texture = new ResourceLocation(compound.getString("ScriptTexture"));
+		}
+		if(compound.contains("LastInited")){
+			this.lastInited = compound.getLong("LastInited");
 		}
 	}
 
@@ -183,6 +188,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 	@Override
 	public void setEnabled(boolean bo) {
 		enabled = bo;
+		saveScriptData();
 	}
 
 	@Override
@@ -193,6 +199,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 	@Override
 	public void setLanguage(String lang) {
 		this.scriptLanguage = lang;
+		saveScriptData();
 	}
 
 	@Override
@@ -235,6 +242,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		if(size < 1 || size > 64)
 			throw new CustomNPCsException("Stacksize has to be between 1 and 64");
 		this.stackSize = size;
+		saveScriptData();
 	}
 
 	@Override
@@ -247,6 +255,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		if(value != durabilityValue)
 			updateClient = true;
 		durabilityValue = value;
+		saveScriptData();
 	}
 
 	@Override
@@ -259,6 +268,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		if(bo != durabilityShow)
 			updateClient = true;
 		durabilityShow = bo;
+		saveScriptData();
 	}
 
 	@Override
@@ -271,6 +281,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		if(color != durabilityColor)
 			updateClient = true;
 		durabilityColor = color;
+		saveScriptData();
 	}
 
 	@Override
@@ -283,6 +294,7 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		if(color != itemColor)
 			updateClient = true;
 		itemColor = color;
+		saveScriptData();
 	}
 
 	public void saveScriptData() {
@@ -290,13 +302,35 @@ public class ItemScriptedWrapper extends ItemStackWrapper implements IItemScript
 		if(c == null) {
 			item.setTag(c = new CompoundTag());
 		}
-		c.put("ScriptedData", getScriptNBT(new CompoundTag()));
+		CompoundTag scriptedData = getScriptNBT(new CompoundTag());
+		scriptedData.putBoolean("DurabilityShow", durabilityShow);
+		scriptedData.putFloat("DurabilityValue", durabilityValue);
+		scriptedData.putInt("DurabilityColor", durabilityColor);
+		scriptedData.putInt("ItemColor", itemColor);
+		scriptedData.putInt("MaxStackSize", stackSize);
+		if(!storedData.isEmpty()) {
+			scriptedData.put("StoredData", storedData);
+		}
+		c.put("ScriptedData", scriptedData);
 	}
 	
 	public void loadScriptData() {
 		CompoundTag c = item.getTag();
 		if(c == null)
 			return;
-		setScriptNBT(c.getCompound("ScriptedData"));
+		CompoundTag scriptedData = c.getCompound("ScriptedData");
+		setScriptNBT(scriptedData);
+		if(scriptedData.contains("DurabilityShow"))
+			durabilityShow = scriptedData.getBoolean("DurabilityShow");
+		if(scriptedData.contains("DurabilityValue"))
+			durabilityValue = scriptedData.getFloat("DurabilityValue");
+		if(scriptedData.contains("DurabilityColor"))
+			durabilityColor = scriptedData.getInt("DurabilityColor");
+		if(scriptedData.contains("ItemColor"))
+			itemColor = scriptedData.getInt("ItemColor");
+		if(scriptedData.contains("MaxStackSize"))
+			stackSize = scriptedData.getInt("MaxStackSize");
+		if(scriptedData.contains("StoredData"))
+			storedData = scriptedData.getCompound("StoredData");
 	}
 }

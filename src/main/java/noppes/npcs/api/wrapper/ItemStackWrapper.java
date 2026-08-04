@@ -41,7 +41,7 @@ public class ItemStackWrapper implements IItemStack {
 
 	public ItemStack item;
 	
-	private CompoundTag storedData = new CompoundTag();
+	protected CompoundTag storedData = new CompoundTag();
 
 	public static ItemStackWrapper AIR = new ItemStackEmptyWrapper();
 
