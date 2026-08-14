@@ -25,7 +25,7 @@ public class EntityAIAnimation extends Goal
     	removed = !npc.isAlive();
     	if(removed)
     		return npc.currentAnimation != AnimationType.SLEEP;
-    	if(npc.stats.ranged.getHasAimAnimation() && npc.isAttacking())
+    	if(npc.stats.ranged.getHasAimAnimation() && npc.isAttacking() && npc.ais.animationType != AnimationType.CRAWL && npc.ais.animationType != AnimationType.NONE)
     		return npc.currentAnimation != AnimationType.AIM;
 
     	hasPath = !npc.getNavigation().isDone();
@@ -38,8 +38,8 @@ public class EntityAIAnimation extends Goal
 			temp = AnimationType.NONE;
     	}
     	
-    	if(hasNavigation() && !isWalkingAnimation(npc.currentAnimation)){
-    		return npc.currentAnimation != AnimationType.NONE;
+    	if(hasNavigation() && !isWalkingAnimation(npc.ais.animationType)){
+    		return npc.currentAnimation != npc.ais.animationType;
     	}
     	
     	return npc.currentAnimation != npc.ais.animationType;
@@ -47,7 +47,7 @@ public class EntityAIAnimation extends Goal
 
     @Override
     public void tick(){
-    	if(npc.stats.ranged.getHasAimAnimation() && npc.isAttacking()){
+    	if(npc.stats.ranged.getHasAimAnimation() && npc.isAttacking() && npc.ais.animationType != AnimationType.CRAWL && npc.ais.animationType != AnimationType.NONE){
     		setAnimation(AnimationType.AIM);
     		return;
     	}
