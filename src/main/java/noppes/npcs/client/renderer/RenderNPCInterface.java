@@ -277,7 +277,9 @@ public class RenderNPCInterface<T extends EntityNPCInterface, M extends EntityMo
 		TextureManager texturemanager = Minecraft.getInstance().getTextureManager();
 		AbstractTexture object = texturemanager.getTexture(resource, null);
 		if(object == null){
-			ResourceDownloader.load(new ImageDownloadAlt(file, par1Str, resource, DefaultPlayerSkin.getDefaultSkin(), fix64, () -> {}));
+			ImageDownloadAlt download = new ImageDownloadAlt(file, par1Str, resource, DefaultPlayerSkin.getDefaultSkin(), fix64, () -> {});
+			texturemanager.register(resource, download);
+			ResourceDownloader.load(download);
 		}
 	}
 }
