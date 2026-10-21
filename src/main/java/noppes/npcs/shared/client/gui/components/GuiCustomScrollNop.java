@@ -97,6 +97,10 @@ public class GuiCustomScrollNop extends Screen {
 		hasSearch = false;
 	}
 
+	public boolean isSearchFieldActive(){
+		return hasSearch && textField != null && textField.isFocused();
+	}
+
 	private int textFieldHeight(){
 		return hasSearch ? 22 : 0;
 	}

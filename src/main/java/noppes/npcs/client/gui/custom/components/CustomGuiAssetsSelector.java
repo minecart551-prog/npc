@@ -286,6 +286,11 @@ public class CustomGuiAssetsSelector extends AbstractWidget implements IGuiCompo
     }
 
     @Override
+    public boolean isTextInputActive() {
+        return folders.isSearchFieldActive() || items.isSearchFieldActive();
+    }
+
+    @Override
     public boolean charTyped(char p_231042_1_, int p_231042_2_) {
         return folders.charTyped(p_231042_1_, p_231042_2_) || items.charTyped(p_231042_1_, p_231042_2_);
     }

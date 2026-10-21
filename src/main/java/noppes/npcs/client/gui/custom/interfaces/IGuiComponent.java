@@ -13,4 +13,8 @@ public interface IGuiComponent {
     default void onRenderPost(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks){};
     void init();
     ICustomGuiComponent component();
+
+    default boolean isTextInputActive(){
+        return false;
+    }
 }

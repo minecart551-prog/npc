@@ -98,6 +98,9 @@ public class BlockWrapper implements IBlock{
 				compound.putDouble(key, ((Number) value).doubleValue());
 			else if(value instanceof String)
 				compound.putString(key, (String)value);
+			else
+				return;
+			tile.setChanged();
 		}
 
 		@Override
@@ -118,7 +121,10 @@ public class BlockWrapper implements IBlock{
 			CompoundTag compound = getNBT();
 			if(compound == null)
 				return;
+			if(!compound.contains(key))
+				return;
 			compound.remove(key);
+			tile.setChanged();
 		}
 
 		@Override
@@ -133,7 +139,11 @@ public class BlockWrapper implements IBlock{
 		public void clear() {
 			if(tile == null)
 				return;
+			CompoundTag existing = ((IEntityPersistentData)tile).getPersistentData().getCompound("CustomNPCsData");
+			if(existing.isEmpty() && !((IEntityPersistentData)tile).getPersistentData().contains("CustomNPCsData"))
+				return;
 			((IEntityPersistentData)tile).getPersistentData().put("CustomNPCsData", new CompoundTag());
+			tile.setChanged();
 		}
 		
 		private CompoundTag getNBT(){

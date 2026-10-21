@@ -71,6 +71,11 @@ public class CustomGuiTextArea extends GuiTextArea implements IGuiComponent {
     }
 
     @Override
+    public boolean isTextInputActive() {
+        return isActive();
+    }
+
+    @Override
     public boolean charTyped(char c, int i) {
         String text = getText();
         boolean bo = super.charTyped(c, i);

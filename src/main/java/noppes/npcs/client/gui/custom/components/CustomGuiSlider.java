@@ -143,6 +143,11 @@ public class CustomGuiSlider extends AbstractWidget implements IGuiComponent {
     }
 
     @Override
+    public boolean isTextInputActive() {
+        return textfield != null && textfield.isFocused();
+    }
+
+    @Override
     public boolean charTyped(char c, int i) {
         if(textfield != null){
             return textfield.charTyped(c, i);

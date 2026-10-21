@@ -1,6 +1,7 @@
 package noppes.npcs.api.block;
 
 import noppes.npcs.api.ITimers;
+import noppes.npcs.api.entity.data.IData;
 
 public interface IBlockScriptedDoor extends IBlock{
 	
@@ -40,4 +41,11 @@ public interface IBlockScriptedDoor extends IBlock{
 	 * @return Returns the commands output
 	 */
 	public String executeCommand(String command);
+
+	/**
+	 * Stored data persists through world restart. Unlike tempdata only Strings and Numbers can be saved.
+	 * Data is scoped to this specific block instance.
+	 * @return The stored data for this block
+	 */
+	public IData getStoreddata();
 }

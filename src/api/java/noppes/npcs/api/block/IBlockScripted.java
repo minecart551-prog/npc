@@ -1,6 +1,7 @@
 package noppes.npcs.api.block;
 
 import noppes.npcs.api.ITimers;
+import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.item.IItemStack;
 
 public interface IBlockScripted extends IBlock{
@@ -112,4 +113,11 @@ public interface IBlockScripted extends IBlock{
 	 * @param arguments, arguments you can give with it
 	 */
 	public void trigger(int id, Object... arguments);
+
+	/**
+	 * Stored data persists through world restart. Unlike tempdata only Strings and Numbers can be saved.
+	 * Data is scoped to this specific block instance.
+	 * @return The stored data for this block
+	 */
+	public IData getStoreddata();
 }

@@ -150,9 +150,10 @@ public class GuiCustom extends AbstractContainerScreen<ContainerCustomGui> imple
         if(scrollingPanel.keyPressed(key, p_keyPressed_2_, p_keyPressed_3_)){
             return true;
         }
-//        if(this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(key, p_keyPressed_2_))){ TODO FABRIC
-//            return true;
-//        }
+        if(this.minecraft.options.keyInventory.matches(key, p_keyPressed_2_) &&
+                (components.isTextInputActive() || scrollingPanel.isTextInputActive())){
+            return true;
+        }
         return super.keyPressed(key, p_keyPressed_2_, p_keyPressed_3_);
     }
 

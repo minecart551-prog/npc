@@ -129,6 +129,15 @@ public class GuiCustomComponents {
         return false;
     }
 
+    public boolean isTextInputActive() {
+        for(IGuiComponent comp : components.values()){
+            if(comp.isTextInputActive()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean keyPressed(int key, int p_keyPressed_2_, int p_keyPressed_3_) {
         for(IGuiComponent comp : components.values()){
             if(comp instanceof GuiEventListener guiEvent){

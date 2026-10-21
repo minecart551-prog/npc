@@ -82,4 +82,9 @@ public class CustomGuiScroll extends GuiCustomScrollNop implements IGuiComponent
     public ICustomGuiComponent component() {
         return component;
     }
+
+    @Override
+    public boolean isTextInputActive() {
+        return isSearchFieldActive();
+    }
 }

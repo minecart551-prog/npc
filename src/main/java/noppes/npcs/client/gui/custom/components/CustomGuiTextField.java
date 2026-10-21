@@ -94,6 +94,11 @@ public class CustomGuiTextField extends EditBox implements IGuiComponent {
     }
 
     @Override
+    public boolean isTextInputActive() {
+        return isFocused();
+    }
+
+    @Override
     public boolean mouseClicked(double i, double j, int k){
         boolean flag = i >= (double)this.getX() && i < (double)(this.getX() + this.width) && j >= (double)this.getY() && j < (double)(this.getY() + this.height);
         this.setFocused(flag);
