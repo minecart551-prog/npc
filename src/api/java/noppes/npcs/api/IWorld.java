@@ -130,6 +130,34 @@ public interface IWorld {
 	 */
 	public IData getStoreddata();
 
+	/**
+	 * Stored data, same rules as {@link #getStoreddata()} (only Strings and Numbers, same cross dimension),
+	 * but backed by its own file: <code>&lt;world&gt;/customnpcs/scripts/world_data/&lt;name&gt;.json</code>
+	 * <p>
+	 * Use this to keep separate features apart, for example <code>world.getWorlddata("economy")</code>.
+	 * The file is only created once something is written to it. Reading a worlddata that doesn't exist
+	 * yet simply returns an empty IData.
+	 * <p>
+	 * The name may only contain letters, numbers, '_' and '-' (max 64 characters).
+	 * The name "world_data" refers to the same data as {@link #getStoreddata()}.
+	 * @param name The name of the worlddata file (without extension)
+	 * @return The stored data of the given file
+	 */
+	public IData getWorlddata(String name);
+
+	/**
+	 * @return The names of all existing worlddata files, including the default "world_data"
+	 */
+	public String[] getWorlddataNames();
+
+	/**
+	 * Deletes the given worlddata file from disk immediately.
+	 * The default "world_data" cannot be deleted.
+	 * @param name The name of the worlddata file (without extension)
+	 * @return True if the file no longer exists
+	 */
+	public boolean deleteWorlddata(String name);
+
 	public IItemStack createItem(String name, int size);
 
 	public IItemStack createItemFromNbt(INbt nbt);

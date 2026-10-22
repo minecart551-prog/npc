@@ -88,52 +88,67 @@ public class WorldWrapper implements IWorld{
 		
 	};
 
-	private IData storeddata = new IData(){
+	private IData storeddata = createWorldDataView(null);
 
-		@Override
-		public void put(String key, Object value) {
-			CompoundTag compound = ScriptController.Instance.compound;
-			if(value instanceof Number)
-				compound.putDouble(key, ((Number) value).doubleValue());
-			else if(value instanceof String)
-				compound.putString(key, (String)value);
-			ScriptController.Instance.shouldSave = true;
-		}
+	/**
+	 * Creates an IData view over a single worlddata file, name null means the default world_data
+	 */
+	private IData createWorldDataView(final String name){
+		return new IData(){
 
-		@Override
-		public Object get(String key) {
-			CompoundTag compound = ScriptController.Instance.compound;
-			if(!compound.contains(key))
-				return null;
-			Tag base = compound.get(key);
-			if(base instanceof NumericTag)
-				return ((NumericTag)base).getAsDouble();
-			return base.getAsString();
-		}
+			private CompoundTag compound(){
+				return ScriptController.Instance.getWorldData(name == null ? ScriptController.DEFAULT_WORLD_DATA : name);
+			}
 
-		@Override
-		public void remove(String key) {
-			ScriptController.Instance.compound.remove(key);
-			ScriptController.Instance.shouldSave = true;
-		}
+			private String dataName(){
+				return name == null ? ScriptController.DEFAULT_WORLD_DATA : name;
+			}
 
-		@Override
-		public boolean has(String key) {
-			return ScriptController.Instance.compound.contains(key);
-		}
+			@Override
+			public void put(String key, Object value) {
+				CompoundTag compound = compound();
+				if(value instanceof Number)
+					compound.putDouble(key, ((Number) value).doubleValue());
+				else if(value instanceof String)
+					compound.putString(key, (String)value);
+				ScriptController.Instance.markWorldDataDirty(dataName());
+			}
 
-		@Override
-		public void clear() {
-			ScriptController.Instance.compound = new CompoundTag();
-			ScriptController.Instance.shouldSave = true;
-		}
+			@Override
+			public Object get(String key) {
+				CompoundTag compound = compound();
+				if(!compound.contains(key))
+					return null;
+				Tag base = compound.get(key);
+				if(base instanceof NumericTag)
+					return ((NumericTag)base).getAsDouble();
+				return base.getAsString();
+			}
 
-		@Override
-		public String[] getKeys() {
-			return ScriptController.Instance.compound.getAllKeys().toArray(new String[ScriptController.Instance.compound.getAllKeys().size()]);
-		}
-		
-	};
+			@Override
+			public void remove(String key) {
+				compound().remove(key);
+				ScriptController.Instance.markWorldDataDirty(dataName());
+			}
+
+			@Override
+			public boolean has(String key) {
+				return compound().contains(key);
+			}
+
+			@Override
+			public void clear() {
+				ScriptController.Instance.clearWorldData(dataName());
+			}
+
+			@Override
+			public String[] getKeys() {
+				CompoundTag compound = compound();
+				return compound.getAllKeys().toArray(new String[compound.getAllKeys().size()]);
+			}
+			
+		};
+	}
 	
 	private WorldWrapper(Level level){
 		this.level = (ServerLevel) level;
@@ -405,6 +420,22 @@ public class WorldWrapper implements IWorld{
 	@Override
 	public IData getStoreddata(){
 		return storeddata;
+	}
+
+	@Override
+	public IData getWorlddata(String name){
+		ScriptController.Instance.getWorldData(ScriptController.checkWorldDataName(name));
+		return createWorldDataView(name);
+	}
+
+	@Override
+	public String[] getWorlddataNames(){
+		return ScriptController.Instance.getWorldDataNames();
+	}
+
+	@Override
+	public boolean deleteWorlddata(String name){
+		return ScriptController.Instance.deleteWorldData(name);
 	}
 	
 	@Override
