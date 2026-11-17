@@ -36,8 +36,8 @@ public class ScriptContainer {
 	 * the count on its own instead of having to be disposed explicitly. Only used by
 	 * {@link #getActiveEngineCount()} for diagnostics.
 	 */
-	private static final Set<ScriptContainer> ENGINED =
-			Collections.newSetFromMap(new WeakHashMap<ScriptContainer, Boolean>());
+	private static final Set<ScriptContainer> ENGINED = Collections.synchronizedSet(
+			Collections.newSetFromMap(new WeakHashMap<ScriptContainer, Boolean>()));
 	
 	public final static HashMap<String, Object> Data = new HashMap<String, Object >();
 	static {
