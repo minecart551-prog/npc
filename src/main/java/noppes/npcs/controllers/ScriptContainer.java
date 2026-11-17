@@ -29,6 +29,15 @@ public class ScriptContainer {
 	private static final String lock = "lock";
 	public static ScriptContainer Current;
 	private static String CurrentType;
+
+	/**
+	 * Containers that currently hold a script engine, keyed weakly so that a container which
+	 * is simply dropped (throwaway item wrappers, an npc that was unloaded, ...) drops out of
+	 * the count on its own instead of having to be disposed explicitly. Only used by
+	 * {@link #getActiveEngineCount()} for diagnostics.
+	 */
+	private static final Set<ScriptContainer> ENGINED =
+			Collections.newSetFromMap(new WeakHashMap<ScriptContainer, Boolean>());
 	
 	public final static HashMap<String, Object> Data = new HashMap<String, Object >();
 	static {
@@ -209,6 +218,7 @@ public class ScriptContainer {
 		engine.put("log", new Log());
 		currentScriptLanguage = scriptLanguage;
 		init = false;
+		ENGINED.add(this);
 	}
 	
 	public boolean isValid() {
@@ -238,6 +248,14 @@ public class ScriptContainer {
 		currentScriptLanguage = null;
 		init = false;
 		unknownFunctions.clear();
+		ENGINED.remove(this);
+	}
+
+	/**
+	 * @return how many script containers currently hold a script engine.
+	 */
+	public static int getActiveEngineCount() {
+		return ENGINED.size();
 	}
 
 	private class Dump implements Function<Object, String> {

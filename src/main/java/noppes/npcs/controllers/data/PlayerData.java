@@ -23,9 +23,15 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerData {
-	private static Map<Integer, PlayerData> dataMap = new HashMap<>();
+	/**
+	 * Keyed by entity id. Ids are never reused, so without an explicit removal on logout a
+	 * brand new entry (plus the player, its script engine and any npc it was editing or
+	 * riding) was created for every single login and kept forever.
+	 */
+	private static Map<Integer, PlayerData> dataMap = new ConcurrentHashMap<>();
     public BlockPos scriptBlockPos = BlockPos.ZERO;
 	
 	public PlayerDialogData dialogData = new PlayerDialogData();
@@ -228,5 +234,37 @@ public class PlayerData {
 			data.setNBT(compound);
 		}
 		return data;
+	}
+
+	/**
+	 * Called once the server has finished writing this player to disk (i.e. from the tail of
+	 * the disconnect path, after {@link net.minecraft.server.players.PlayerList#remove}).
+	 *
+	 * Drops everything that was only alive because of this login session: the map entry
+	 * itself, the reference to the (now discarded) player entity, any npc the player was
+	 * editing or riding, and the player script containers with their script engines. The next
+	 * login creates a fresh entry and reloads from disk, exactly as it does today.
+	 */
+	public static void logout(Player player) {
+		if(player == null)
+			return;
+		PlayerData data = dataMap.remove(player.getId());
+		if(data == null)
+			return;
+		data.player = null;
+		data.editingNpc = null;
+		data.mounted = null;
+		data.activeCompanion = null;
+		if(data.scriptData != null){
+			data.scriptData.dispose();
+			data.scriptData = null;
+		}
+	}
+
+	/**
+	 * Number of live entries, for debugging/diagnostics.
+	 */
+	public static int size() {
+		return dataMap.size();
 	}
 }

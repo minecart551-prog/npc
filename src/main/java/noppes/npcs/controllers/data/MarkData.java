@@ -13,19 +13,35 @@ import noppes.npcs.entity.data.IEntityPersistentData;
 import noppes.npcs.packets.Packets;
 import noppes.npcs.packets.client.PacketMarkData;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 public class MarkData {
 
 	private static final String NBTKEY = "cnpcmarkdata";
-	private LivingEntity entity;
+	private WeakReference<LivingEntity> entityRef;
 
 	public List<Mark> marks = new ArrayList<Mark>();
 
-	private static Map<Integer, MarkData> dataMap = new HashMap<>();
+	/**
+	 * Keyed weakly by the entity itself instead of by the entity id.
+	 *
+	 * Entity ids come from a static counter and are never reused, so an entry could only
+	 * ever be looked up again through a live entity. The old id-keyed map therefore grew by
+	 * one entry (and one hard reference to the entity, and to everything the entity owns:
+	 * script container, script engine, ...) for every entity that ever spawned, and never
+	 * shrank. Keying weakly keeps the exact same lookup semantics while letting the entry
+	 * disappear as soon as the entity is garbage collected (chunk unload, discard, death).
+	 *
+	 * The value must not reference the key strongly, hence {@link #entityRef}.
+	 */
+	private static final Map<LivingEntity, MarkData> dataMap =
+			Collections.synchronizedMap(new WeakHashMap<LivingEntity, MarkData>());
 
 	public void setNBT(CompoundTag compound){
 		List<Mark> marks = new ArrayList<Mark>();
@@ -56,15 +72,17 @@ public class MarkData {
 	}
 
 	public void save() {
-		((IEntityPersistentData)entity).getPersistentData().put(NBTKEY, getNBT());
+		LivingEntity e = entity();
+		if(e == null)
+			return;
+		((IEntityPersistentData)e).getPersistentData().put(NBTKEY, getNBT());
 	}
 
 	public IMark addMark(int type) {
 		Mark m = new Mark();
 		m.type = type;
 		marks.add(m);
-		if(!entity.level().isClientSide)
-			syncClients();
+		syncIfServer();
 		return m;
 	}
 
@@ -73,22 +91,52 @@ public class MarkData {
 		m.type = type;
 		m.color = color;
 		marks.add(m);
-		if(!entity.level().isClientSide)
-			syncClients();
+		syncIfServer();
 		return m;
 	}
 
 	public static MarkData get(LivingEntity entity) {
-		MarkData data = dataMap.computeIfAbsent(entity.getId(), (i)->new MarkData());
-		if(data.entity == null){
-			data.entity = entity;
+		MarkData data;
+		// Synchronised on the map wrapper so the weak cleanup can never race with a lookup.
+		synchronized (dataMap) {
+			data = dataMap.get(entity);
+			if (data == null) {
+				data = new MarkData();
+				dataMap.put(entity, data);
+			}
+		}
+		if (data.entity() == null) {
+			data.entityRef = new WeakReference<LivingEntity>(entity);
 			data.setNBT(((IEntityPersistentData)entity).getPersistentData().getCompound(NBTKEY));
 		}
 		return data;
 	}
 
+	/**
+	 * @return the owning entity, or null when it has already been garbage collected.
+	 */
+	private LivingEntity entity() {
+		return entityRef == null ? null : entityRef.get();
+	}
+
+	private void syncIfServer() {
+		LivingEntity e = entity();
+		if(e != null && !e.level().isClientSide)
+			syncClients();
+	}
+
 	public void syncClients() {
-		Packets.sendAll( new PacketMarkData(entity.getId(), getNBT()));
+		LivingEntity e = entity();
+		if(e == null)
+			return;
+		Packets.sendAll( new PacketMarkData(e.getId(), getNBT()));
+	}
+
+	/**
+	 * Number of live entries, for debugging/diagnostics.
+	 */
+	public static int size() {
+		return dataMap.size();
 	}
 	
 	public class Mark implements IMark{	

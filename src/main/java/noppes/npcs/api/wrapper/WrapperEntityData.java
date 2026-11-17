@@ -24,25 +24,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WrapperEntityData {
-	private static Map<Integer, WrapperEntityData> dataMap = new HashMap<>();
+	// This used to hold a static Map<Integer, WrapperEntityData> keyed by entity id. Entity
+	// ids are never reused, so it grew by one entry for every entity that was ever looked up
+	// and was never pruned. It was also dead weight: the mapping function always produced the
+	// shared "backup" instance, so the map never actually cached anything - the lookup below
+	// always fell through to getData(entity). Dropping it keeps the exact same behaviour
+	// without the unbounded growth.
 
-	
 	public IEntity base;
 	public WrapperEntityData(IEntity base){
 		this.base = base;
 	}
 
-
-
-	private static WrapperEntityData backup = new WrapperEntityData(null);
 	public static IEntity get(Entity entity){
 		if(entity == null || entity.position() == Vec3.ZERO)
 			return null;
-		WrapperEntityData data = dataMap.computeIfAbsent(entity.getId(), (i)->backup);
-		if(data == null || data == backup){//shouldnt happen, but does occasionally for unknown reasons
-			//LogWriter.warn("Unable to get EntityData for " + entity);
-			return getData(entity).base;
-		}
+		WrapperEntityData data = getData(entity);
+		if(data == null)
+			return null;
 		return data.base;
 	}
 

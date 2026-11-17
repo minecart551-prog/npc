@@ -22,6 +22,7 @@ public class CmdNoppes {
                 .then(CmdDialog.register())
                 .then(CmdFaction.register())
                 .then(CmdMark.register())
+                .then(CmdMemory.register())
                 .then(CmdNPC.register())
                 .then(CmdQuest.register())
                 .then(CmdScene.register())

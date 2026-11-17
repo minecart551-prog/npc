@@ -47,6 +47,18 @@ public class PlayerScriptData implements IScriptHandler{
 		scripts = new ArrayList<ScriptContainer>();
 	}
 
+	/**
+	 * Releases the script engines held by this player's script containers. Called when the
+	 * player logs out; the containers themselves are thrown away with the owning PlayerData.
+	 */
+	public void dispose() {
+		for(ScriptContainer script : scripts){
+			script.dispose();
+		}
+		scripts.clear();
+		playerAPI = null;
+	}
+
 	public void load(CompoundTag compound) {
 		scripts = NBTTags.GetScript(compound.getList("Scripts", 10), this);
 		scriptLanguage = compound.getString("ScriptLanguage");

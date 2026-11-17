@@ -35,8 +35,6 @@ import java.util.Map.Entry;
 public class ItemStackWrapper implements IItemStack {
 	private Map<String, Object> tempData = new HashMap<String, Object>();
 
-	private static Map<Integer, ItemStackWrapper> dataMap = new HashMap<>();
-
     private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
 	public ItemStack item;

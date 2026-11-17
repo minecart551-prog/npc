@@ -29,6 +29,7 @@
     "NoiseChunkGeneratorMixin",
     "PackRepositoryMixin",
     "PersistentEntitySectionManagerMixin",
+    "PlayerListMixin",
     "ScoreBoardMixin",
     "ServerLevelMixin",
     "SynchedEntityDataMixin",
