@@ -23,6 +23,7 @@ public class CustomTabs {
             output.accept(CustomBlocks.waypoint_item.getDefaultInstance());
             output.accept(CustomBlocks.border_item.getDefaultInstance());
             output.accept(CustomBlocks.scripted_item.getDefaultInstance());
+            output.accept(CustomBlocks.scripted_survival_item.getDefaultInstance());
             output.accept(CustomBlocks.scripted_door_item.getDefaultInstance());
             output.accept(CustomBlocks.builder_item.getDefaultInstance());
             output.accept(CustomBlocks.copy_item.getDefaultInstance());

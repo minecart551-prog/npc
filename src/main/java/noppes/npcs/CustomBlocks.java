@@ -28,6 +28,8 @@ public class CustomBlocks {
     public static Item border_item = createItem(border);
     public static Block scripted = new BlockScripted();
     public static Item scripted_item = createItem(scripted);
+    public static Block scripted_survival = new BlockScriptedSurvival();
+    public static Item scripted_survival_item = createItem(scripted_survival);
     public static Block scripted_door = new BlockScriptedDoor();
     public static Item scripted_door_item = new ItemScriptedDoor(scripted_door);
     public static Block builder = new BlockBuilder();
@@ -42,7 +44,7 @@ public class CustomBlocks {
     public static BlockEntityType<TileCopy> tile_copy = createTile("tilenpccopy", TileCopy::new, CustomBlocks.copy);
     public static BlockEntityType<TileMailbox> tile_mailbox = createTile("tilemailbox", TileMailbox::new, CustomBlocks.mailbox, CustomBlocks.mailbox2, CustomBlocks.mailbox3);
     public static BlockEntityType<TileRedstoneBlock> tile_redstoneblock = createTile("tileredstoneblock", TileRedstoneBlock::new, CustomBlocks.redstone);
-    public static BlockEntityType<TileScripted> tile_scripted = createTile("tilenpcscripted", TileScripted::new, CustomBlocks.scripted);
+    public static BlockEntityType<TileScripted> tile_scripted = createTile("tilenpcscripted", TileScripted::new, CustomBlocks.scripted, CustomBlocks.scripted_survival);
     public static BlockEntityType<TileScriptedDoor> tile_scripteddoor = createTile("tilenpcscripteddoor", TileScriptedDoor::new, CustomBlocks.scripted_door);
     public static BlockEntityType<TileWaypoint> tile_waypoint = createTile("tilewaypoint", TileWaypoint::new, CustomBlocks.waypoint);
 
@@ -54,6 +56,7 @@ public class CustomBlocks {
             Registry.register(BuiltInRegistries.BLOCK,CustomNpcs.MODID+ ":npcwaypoint",waypoint);
             Registry.register(BuiltInRegistries.BLOCK,CustomNpcs.MODID+ ":npcborder",border);
             Registry.register(BuiltInRegistries.BLOCK,CustomNpcs.MODID+ ":npcscripted",scripted);
+            Registry.register(BuiltInRegistries.BLOCK,CustomNpcs.MODID+ ":npcscriptedsurvival",scripted_survival);
             Registry.register(BuiltInRegistries.BLOCK,CustomNpcs.MODID+ ":npcscripteddoor",scripted_door);
             Registry.register(BuiltInRegistries.BLOCK,CustomNpcs.MODID+ ":npcbuilderblock",builder);
             Registry.register(BuiltInRegistries.BLOCK,CustomNpcs.MODID+ ":npccopyblock",copy);
@@ -66,6 +69,7 @@ public class CustomBlocks {
             Registry.register(BuiltInRegistries.ITEM,CustomNpcs.MODID+ ":npcwaypoint",waypoint_item);
             Registry.register(BuiltInRegistries.ITEM,CustomNpcs.MODID+ ":npcborder",border_item);
             Registry.register(BuiltInRegistries.ITEM,CustomNpcs.MODID+ ":npcscripted",scripted_item);
+            Registry.register(BuiltInRegistries.ITEM,CustomNpcs.MODID+ ":npcscriptedsurvival",scripted_survival_item);
             Registry.register(BuiltInRegistries.ITEM,CustomNpcs.MODID+ ":npcscripteddoortool",scripted_door_item);
             Registry.register(BuiltInRegistries.ITEM,CustomNpcs.MODID+ ":npcbuilderblock", builder_item);
             Registry.register(BuiltInRegistries.ITEM,CustomNpcs.MODID+ ":npccopyblock",copy_item);

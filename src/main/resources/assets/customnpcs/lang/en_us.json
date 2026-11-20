@@ -96,6 +96,7 @@
 	"block.customnpcs.npcmailbox": "Mailbox",
 	"block.customnpcs.npcredstoneblock": "Redstone Block",
 	"block.customnpcs.npcscripted": "Scripted Block",
+	"block.customnpcs.npcscriptedsurvival": "Scripted Block Survival",
 	"block.customnpcs.npcscripteddoor": "Scripted Door",
 	"block.customnpcs.npcwaypoint": "Location Quest Block",
 	"clone.client": "Client Side",

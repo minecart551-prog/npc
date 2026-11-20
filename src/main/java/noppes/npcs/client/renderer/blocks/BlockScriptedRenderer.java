@@ -43,7 +43,7 @@ public class BlockScriptedRenderer extends BlockRendererInterface<TileScripted> 
         if(overrideModel()){
 			matrixStack.translate(0.5f, 0.5f, 0.5f);
 			matrixStack.scale(2, 2, 2);
-        	renderItem(new ItemStack(CustomBlocks.scripted), matrixStack, buffer, light, overlay);
+        	renderItem(new ItemStack(tile.getBlockState().getBlock()), matrixStack, buffer, light, overlay);
         }
         else{
 			matrixStack.mulPose(Axis.YP.rotationDegrees(tile.rotationY));

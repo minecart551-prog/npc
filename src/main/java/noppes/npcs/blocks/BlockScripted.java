@@ -167,8 +167,10 @@ public class BlockScripted extends BlockInterface {
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         if(!level.isClientSide){
-            TileScripted tile = (TileScripted) level.getBlockEntity(pos);
-            if(!EventHooks.onScriptBlockHarvest(tile, player))
+            // The block has already been removed from the world when this is called,
+            // so use the block entity vanilla captured before breaking the block
+            TileScripted tile = blockEntity instanceof TileScripted ? (TileScripted) blockEntity : null;
+            if(tile == null || !EventHooks.onScriptBlockHarvest(tile, player))
                 super.playerDestroy(level, player, pos, state, blockEntity, tool);
         }
     }
@@ -181,8 +183,10 @@ public class BlockScripted extends BlockInterface {
     @Override
     public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
         if(!level.isClientSide){
-            TileScripted tile = (TileScripted) level.getBlockEntity(pos);
-            if(EventHooks.onScriptBlockExploded(tile))
+            // The block entity is already removed by the time the explosion
+            // callback runs, only fire the script event if it is still present
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if(blockEntity instanceof TileScripted && EventHooks.onScriptBlockExploded((TileScripted) blockEntity))
                 return;
         }
         super.wasExploded(level, pos, explosion);
