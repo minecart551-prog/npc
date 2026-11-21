@@ -29,6 +29,7 @@ import noppes.npcs.entity.EntityNPCInterface;
 import noppes.npcs.entity.data.IEntityPersistentData;
 import noppes.npcs.mixin.EntityIMixin;
 import noppes.npcs.shared.common.util.LRUHashMap;
+import noppes.npcs.util.FactionsInterop;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -288,6 +289,11 @@ public class BlockWrapper implements IBlock{
 	@Override
 	public IData getStoreddata(){
 		return storeddata;
+	}
+
+	@Override
+	public String getClaimingFaction(){
+		return FactionsInterop.getClaimingFaction(level.getMCLevel(), pos);
 	}
 
 	@Override

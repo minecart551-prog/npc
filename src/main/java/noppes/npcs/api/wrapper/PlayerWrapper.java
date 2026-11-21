@@ -43,6 +43,7 @@ import noppes.npcs.packets.Packets;
 import noppes.npcs.packets.client.*;
 import noppes.npcs.packets.server.SPacketDimensionTeleport;
 import noppes.npcs.shared.client.util.NoppesStringUtils;
+import noppes.npcs.util.FactionsInterop;
 import noppes.npcs.util.ValueUtil;
 
 import java.util.ArrayList;
@@ -265,6 +266,11 @@ public class PlayerWrapper<T extends ServerPlayer> extends EntityLivingBaseWrapp
 	@Override
 	public int getFactionPoints(int faction) {
 		return getData().factionData.getFactionPoints(entity, faction);
+	}
+
+	@Override
+	public String getFaction(){
+		return FactionsInterop.getPlayerFaction(entity);
 	}
 
 	@Override

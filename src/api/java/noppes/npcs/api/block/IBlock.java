@@ -74,6 +74,13 @@ public interface IBlock {
 	 * (works only for blocks with TileEntities)
 	 */
 	public IData getStoreddata();
+	
+	/**
+	 * Returns the name of the Factions mod faction that claims the chunk this
+	 * block is in, or null when no faction has claimed it (wilderness) or when
+	 * the Factions mod is not installed.
+	 */
+	public String getClaimingFaction();
 		
 	public IWorld getWorld();
 	

@@ -74,6 +74,14 @@ public interface IPlayer<T extends ServerPlayer> extends IEntityLiving<T> {
      */
 	public int getFactionPoints(int faction);
 
+	/**
+	 * @return the name of the Factions mod faction this player belongs to,
+	 *         or null when the player is factionless / the mod is not installed.
+	 *         Returns the faction name used by the Factions mod, null when the
+	 *         player is not part of any faction.
+	 */
+	public String getFaction();
+
 	public void message(String message);
 	
 	public int getGamemode();
