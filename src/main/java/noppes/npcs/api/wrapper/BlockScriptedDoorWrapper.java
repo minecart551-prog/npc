@@ -96,4 +96,14 @@ public class BlockScriptedDoorWrapper extends BlockWrapper implements IBlockScri
 		player.setPos(getX(), getY(), getZ());
 		return NoppesUtilServer.runCommand(tile.getLevel(), tile.getBlockPos(), "ScriptBlock: " + tile.getBlockPos(), command, null, player);
 	}
+
+	@Override
+	public boolean addScript(String scriptName) {
+		return tile.addScript(scriptName);
+	}
+
+	@Override
+	public String[] getAvailableScripts() {
+		return tile.getAvailableScripts();
+	}
 }

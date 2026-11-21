@@ -115,6 +115,22 @@ public interface IBlockScripted extends IBlock{
 	public void trigger(int id, Object... arguments);
 
 	/**
+	 * Adds another registered script file to this block's scripts. The file must
+	 * be a registered script (from the scripts folder, e.g. "traders/new/gunshop.js").
+	 * It is attached to the currently running script container (or the first
+	 * container when called outside of a script event) and re-evaluated on the
+	 * next script event.
+	 * @param scriptName The name of the script file to add
+	 * @return true if the script was found and added (or already present)
+	 */
+	public boolean addScript(String scriptName);
+
+	/**
+	 * @return The names of all currently registered script files.
+	 */
+	public String[] getAvailableScripts();
+
+	/**
 	 * Stored data persists through world restart. Unlike tempdata only Strings and Numbers can be saved.
 	 * Data is scoped to this specific block instance.
 	 * @return The stored data for this block

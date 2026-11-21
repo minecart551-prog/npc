@@ -215,4 +215,14 @@ public class BlockScriptedWrapper extends BlockWrapper implements IBlockScripted
 	public void trigger(int id, Object... arguments) {
 		EventHooks.onScriptTriggerEvent(tile, id, level, getPos(), null, arguments);
 	}
+
+	@Override
+	public boolean addScript(String scriptName) {
+		return tile.addScript(scriptName);
+	}
+
+	@Override
+	public String[] getAvailableScripts() {
+		return tile.getAvailableScripts();
+	}
 }

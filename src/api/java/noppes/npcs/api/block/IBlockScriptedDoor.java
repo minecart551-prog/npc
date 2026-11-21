@@ -43,6 +43,18 @@ public interface IBlockScriptedDoor extends IBlock{
 	public String executeCommand(String command);
 
 	/**
+	 * Adds another registered script file to this block's scripts.
+	 * @param scriptName The name of the script file to add
+	 * @return true if the script was found and added (or already present)
+	 */
+	public boolean addScript(String scriptName);
+
+	/**
+	 * @return The names of all currently registered script files.
+	 */
+	public String[] getAvailableScripts();
+
+	/**
 	 * Stored data persists through world restart. Unlike tempdata only Strings and Numbers can be saved.
 	 * Data is scoped to this specific block instance.
 	 * @return The stored data for this block

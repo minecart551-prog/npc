@@ -153,6 +153,32 @@ public class TileScriptedDoor extends TileDoor implements IScriptBlockHandler{
 		return scripts;
 	}
 
+	public boolean addScript(String scriptName) {
+		if (scriptName == null || scriptName.isEmpty())
+			return false;
+		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
+			return false;
+		if (!ScriptController.Instance.scripts.containsKey(scriptName))
+			return false;
+		ScriptContainer target = ScriptContainer.Current;
+		if (target == null || !scripts.contains(target)) {
+			if (scripts.isEmpty())
+				scripts.add(new ScriptContainer(this));
+			target = scripts.get(0);
+		}
+		if (target.scripts.contains(scriptName))
+			return true;
+		target.scripts.add(scriptName);
+		target.lastCreated = 0;
+		return true;
+	}
+
+	public String[] getAvailableScripts() {
+		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
+			return new String[0];
+		return ScriptController.Instance.scripts.keySet().toArray(new String[ScriptController.Instance.scripts.size()]);
+	}
+
 	@Override
 	public CompoundTag getUpdateTag(){
 		CompoundTag compound = new CompoundTag();
