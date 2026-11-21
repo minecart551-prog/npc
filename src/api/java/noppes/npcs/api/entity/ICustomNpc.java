@@ -107,4 +107,21 @@ public interface ICustomNpc<T extends Mob> extends IMob<T> {
 	 */
 	public void trigger(int id, Object... arguments);
 	
+	/**
+	 * Adds another script file to this NPC's scripts. The file must be a
+	 * registered script (from the scripts folder, e.g. "traders/new/gunshop.js").
+	 * It is attached to the currently running script container (or the first
+	 * container if called outside of a script event) and re-evaluated on the
+	 * next script event.
+	 * @param scriptName The name of the script file to add
+	 * @return true if the script was found and added (or already present)
+	 */
+	public boolean addScript(String scriptName);
+
+	/**
+	 * @return The names of all currently registered script files (from the
+	 *         scripts folder), usable with addScript().
+	 */
+	public String[] getAvailableScripts();
+	
 }

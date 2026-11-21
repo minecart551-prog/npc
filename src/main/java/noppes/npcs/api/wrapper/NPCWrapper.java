@@ -261,4 +261,14 @@ public class NPCWrapper<T extends EntityNPCInterface> extends EntityLivingWrappe
 	public void trigger(int id, Object... arguments) {
 		EventHooks.onScriptTriggerEvent(entity.script, id, getWorld(), getPos(), null, arguments);
 	}
+
+	@Override
+	public boolean addScript(String scriptName) {
+		return entity.script.addScript(scriptName);
+	}
+
+	@Override
+	public String[] getAvailableScripts() {
+		return entity.script.getAvailableScripts();
+	}
 }

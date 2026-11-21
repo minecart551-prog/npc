@@ -93,6 +93,42 @@ public class DataScript implements IScriptHandler{
 		return scripts;
 	}
 
+	/**
+	 * Adds another registered script file to this NPC's scripts. The file is
+	 * attached to the currently running container (or the first container when
+	 * called outside of a script event) and re-evaluated on the next event.
+	 * @return true if the script was found and added (or already present)
+	 */
+	public boolean addScript(String scriptName) {
+		if (scriptName == null || scriptName.isEmpty())
+			return false;
+		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
+			return false;
+		if (!ScriptController.Instance.scripts.containsKey(scriptName))
+			return false;
+		ScriptContainer target = ScriptContainer.Current;
+		if (target == null || !scripts.contains(target)) {
+			if (scripts.isEmpty())
+				scripts.add(new ScriptContainer(this));
+			target = scripts.get(0);
+		}
+		if (target.scripts.contains(scriptName))
+			return true;
+		target.scripts.add(scriptName);
+		// force the container to rebuild its full code on the next run
+		target.lastCreated = 0;
+		return true;
+	}
+
+	/**
+	 * @return the names of all currently registered script files
+	 */
+	public String[] getAvailableScripts() {
+		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
+			return new String[0];
+		return ScriptController.Instance.scripts.keySet().toArray(new String[ScriptController.Instance.scripts.size()]);
+	}
+
 	@Override
 	public String noticeString() {
 		BlockPos pos = npc.blockPosition();
