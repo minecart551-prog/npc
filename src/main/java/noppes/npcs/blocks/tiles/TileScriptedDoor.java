@@ -154,23 +154,51 @@ public class TileScriptedDoor extends TileDoor implements IScriptBlockHandler{
 	}
 
 	public boolean addScript(String scriptName) {
-		if (scriptName == null || scriptName.isEmpty())
-			return false;
-		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
-			return false;
-		if (!ScriptController.Instance.scripts.containsKey(scriptName))
-			return false;
 		ScriptContainer target = ScriptContainer.Current;
 		if (target == null || !scripts.contains(target)) {
 			if (scripts.isEmpty())
 				scripts.add(new ScriptContainer(this));
 			target = scripts.get(0);
 		}
+		return addScriptToContainer(target, scriptName);
+	}
+
+	public boolean addScript(int containerIndex, String scriptName) {
+		if (containerIndex < 0)
+			return false;
+		if (containerIndex > scripts.size())
+			return false;
+		if (containerIndex == scripts.size())
+			scripts.add(new ScriptContainer(this));
+		ScriptContainer target = scripts.get(containerIndex);
+		return addScriptToContainer(target, scriptName);
+	}
+
+	private boolean addScriptToContainer(ScriptContainer target, String scriptName) {
+		if (scriptName == null || scriptName.isEmpty())
+			return false;
+		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
+			return false;
+		if (!ScriptController.Instance.scripts.containsKey(scriptName))
+			return false;
 		if (target.scripts.contains(scriptName))
 			return true;
 		target.scripts.add(scriptName);
 		target.lastCreated = 0;
 		return true;
+	}
+
+	public int addScriptContainer() {
+		try {
+			scripts.add(new ScriptContainer(this));
+			return scripts.size() - 1;
+		} catch (Throwable t) {
+			return -1;
+		}
+	}
+
+	public int getScriptCount() {
+		return scripts.size();
 	}
 
 	public String[] getAvailableScripts() {

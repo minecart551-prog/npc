@@ -50,6 +50,25 @@ public interface IBlockScriptedDoor extends IBlock{
 	public boolean addScript(String scriptName);
 
 	/**
+	 * Adds another registered script file to a specific script container (tab)
+	 * of this block, by index (0-based). If {@code containerIndex} equals the
+	 * current number of containers a new (empty) container is created first.
+	 * @return true if the script was found and added (or already present)
+	 */
+	public boolean addScript(int containerIndex, String scriptName);
+
+	/**
+	 * Creates a new (empty) script container (tab) on this block.
+	 * @return the index of the new container, or -1 on failure
+	 */
+	public int addScriptContainer();
+
+	/**
+	 * @return the number of script containers (tabs) on this block
+	 */
+	public int getScriptCount();
+
+	/**
 	 * @return The names of all currently registered script files.
 	 */
 	public String[] getAvailableScripts();

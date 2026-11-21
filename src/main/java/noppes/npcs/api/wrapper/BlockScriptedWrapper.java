@@ -222,6 +222,21 @@ public class BlockScriptedWrapper extends BlockWrapper implements IBlockScripted
 	}
 
 	@Override
+	public boolean addScript(int containerIndex, String scriptName) {
+		return tile.addScript(containerIndex, scriptName);
+	}
+
+	@Override
+	public int addScriptContainer() {
+		return tile.addScriptContainer();
+	}
+
+	@Override
+	public int getScriptCount() {
+		return tile.getScriptCount();
+	}
+
+	@Override
 	public String[] getAvailableScripts() {
 		return tile.getAvailableScripts();
 	}

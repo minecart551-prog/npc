@@ -97,27 +97,69 @@ public class DataScript implements IScriptHandler{
 	 * Adds another registered script file to this NPC's scripts. The file is
 	 * attached to the currently running container (or the first container when
 	 * called outside of a script event) and re-evaluated on the next event.
+	 * Calling this multiple times with the same name is safe (no duplicates).
 	 * @return true if the script was found and added (or already present)
 	 */
 	public boolean addScript(String scriptName) {
-		if (scriptName == null || scriptName.isEmpty())
-			return false;
-		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
-			return false;
-		if (!ScriptController.Instance.scripts.containsKey(scriptName))
-			return false;
 		ScriptContainer target = ScriptContainer.Current;
 		if (target == null || !scripts.contains(target)) {
 			if (scripts.isEmpty())
 				scripts.add(new ScriptContainer(this));
 			target = scripts.get(0);
 		}
+		return addScriptToContainer(target, scriptName);
+	}
+
+	/**
+	 * Adds another registered script file to a specific script container (tab)
+	 * of this NPC, by index (0-based). If {@code containerIndex} equals the
+	 * current number of containers a new (empty) container is created first.
+	 * @return true if the script was found and added (or already present)
+	 */
+	public boolean addScript(int containerIndex, String scriptName) {
+		if (containerIndex < 0)
+			return false;
+		if (containerIndex > scripts.size())
+			return false;
+		if (containerIndex == scripts.size())
+			scripts.add(new ScriptContainer(this));
+		ScriptContainer target = scripts.get(containerIndex);
+		return addScriptToContainer(target, scriptName);
+	}
+
+	private boolean addScriptToContainer(ScriptContainer target, String scriptName) {
+		if (scriptName == null || scriptName.isEmpty())
+			return false;
+		if (ScriptController.Instance == null || ScriptController.Instance.scripts == null)
+			return false;
+		if (!ScriptController.Instance.scripts.containsKey(scriptName))
+			return false;
 		if (target.scripts.contains(scriptName))
 			return true;
 		target.scripts.add(scriptName);
 		// force the container to rebuild its full code on the next run
 		target.lastCreated = 0;
 		return true;
+	}
+
+	/**
+	 * Creates a new (empty) script container (tab) on this NPC.
+	 * @return the index of the new container, or -1 on failure
+	 */
+	public int addScriptContainer() {
+		try {
+			scripts.add(new ScriptContainer(this));
+			return scripts.size() - 1;
+		} catch (Throwable t) {
+			return -1;
+		}
+	}
+
+	/**
+	 * @return the number of script containers (tabs) on this NPC
+	 */
+	public int getScriptCount() {
+		return scripts.size();
 	}
 
 	/**

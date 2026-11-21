@@ -268,6 +268,21 @@ public class NPCWrapper<T extends EntityNPCInterface> extends EntityLivingWrappe
 	}
 
 	@Override
+	public boolean addScript(int containerIndex, String scriptName) {
+		return entity.script.addScript(containerIndex, scriptName);
+	}
+
+	@Override
+	public int addScriptContainer() {
+		return entity.script.addScriptContainer();
+	}
+
+	@Override
+	public int getScriptCount() {
+		return entity.script.getScriptCount();
+	}
+
+	@Override
 	public String[] getAvailableScripts() {
 		return entity.script.getAvailableScripts();
 	}
