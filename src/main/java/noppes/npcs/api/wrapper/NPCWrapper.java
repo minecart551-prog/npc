@@ -263,6 +263,16 @@ public class NPCWrapper<T extends EntityNPCInterface> extends EntityLivingWrappe
 	}
 
 	@Override
+	public boolean canRideVehicles() {
+		return entity.advanced.canRideVehicles;
+	}
+
+	@Override
+	public void setCanRideVehicles(boolean bo) {
+		entity.advanced.canRideVehicles = bo;
+	}
+
+	@Override
 	public boolean addScript(String scriptName) {
 		return entity.script.addScript(scriptName);
 	}

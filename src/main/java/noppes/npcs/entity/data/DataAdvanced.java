@@ -47,6 +47,7 @@ public class DataAdvanced implements INPCAdvanced{
     public boolean attackOtherFactions = false;
     public boolean defendFaction = false;
 	public boolean disablePitch = false;
+	public boolean canRideVehicles = true;
 	public DataScenes scenes;
 
     public DataAdvanced(EntityNPCInterface npc) {
@@ -74,6 +75,7 @@ public class DataAdvanced implements INPCAdvanced{
         compound.putBoolean("AttackOtherFactions", attackOtherFactions);
         compound.putBoolean("DefendFaction", defendFaction);
         compound.putBoolean("DisablePitch", disablePitch);
+        compound.putBoolean("CanRideVehicles", canRideVehicles);
 
         compound.putInt("Role", this.npc.role.getType());
         compound.putInt("NpcJob", this.npc.job.getType());
@@ -107,6 +109,7 @@ public class DataAdvanced implements INPCAdvanced{
         attackOtherFactions = compound.getBoolean("AttackOtherFactions");
         defendFaction = compound.getBoolean("DefendFaction");
         disablePitch = compound.getBoolean("DisablePitch");
+        canRideVehicles = !compound.contains("CanRideVehicles") || compound.getBoolean("CanRideVehicles");
 
         setRole(compound.getInt("Role"));
         setJob(compound.getInt("NpcJob"));

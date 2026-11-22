@@ -106,7 +106,17 @@ public interface ICustomNpc<T extends Mob> extends IMob<T> {
 	 * @param arguments, arguments you can give with it
 	 */
 	public void trigger(int id, Object... arguments);
-	
+
+	/**
+	 * Whether this NPC may be auto-picked-up / ride ImmersiveAircraft vehicles.
+	 * @return true by default
+	 */
+	public boolean canRideVehicles();
+
+	/**
+	 * Set whether this NPC may ride ImmersiveAircraft vehicles.
+	 */
+	public void setCanRideVehicles(boolean bo);
 	/**
 	 * Adds another script file to this NPC's scripts. The file must be a
 	 * registered script (from the scripts folder, e.g. "traders/new/gunshop.js").

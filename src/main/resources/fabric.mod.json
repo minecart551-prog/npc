@@ -25,7 +25,8 @@
     ]
   },
   "mixins": [
-    "customnpcs.mixins.json"
+    "customnpcs.mixins.json",
+    "customnpcs_immersiveaircraft.mixins.json"
   ],
   "accessWidener": "customnpcs.accesswidener",
 

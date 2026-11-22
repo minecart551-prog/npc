@@ -1,0 +1,10 @@
+{
+  "required": false,
+  "package": "noppes.npcs.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "customnpcs.refmap.json",
+  "mixins": [
+    "ImmersiveAircraftVehicleMixin"
+  ],
+  "minVersion": "0.8"
+}
