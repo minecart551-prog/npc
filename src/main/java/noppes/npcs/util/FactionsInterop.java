@@ -195,6 +195,10 @@ public class FactionsInterop {
 	 *         following the factions mod's claim access level rules.
 	 *         Ops always allowed; unclaimed chunks allow everyone.
 	 */
+	public static boolean canEditClaim(ServerPlayer player, Level level, int x, int y, int z) {
+		return canEditClaim(player, level, new BlockPos(x, y, z));
+	}
+
 	public static boolean canEditClaim(ServerPlayer player, Level level, BlockPos pos) {
 		try {
 			if (player == null)
