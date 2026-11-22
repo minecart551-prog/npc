@@ -274,6 +274,11 @@ public class PlayerWrapper<T extends ServerPlayer> extends EntityLivingBaseWrapp
 	}
 
 	@Override
+	public String getFactionRank(){
+		return FactionsInterop.getPlayerRank(entity);
+	}
+
+	@Override
 	public float getRotation(){
 		return entity.getYRot();
 	}

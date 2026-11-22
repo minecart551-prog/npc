@@ -82,6 +82,12 @@ public interface IPlayer<T extends ServerPlayer> extends IEntityLiving<T> {
 	 */
 	public String getFaction();
 
+	/**
+	 * @return the rank name (OWNER/LEADER/COMMANDER/MEMBER/GUEST) of this
+	 *         player in their Factions mod faction, or null when factionless.
+	 */
+	public String getFactionRank();
+
 	public void message(String message);
 	
 	public int getGamemode();

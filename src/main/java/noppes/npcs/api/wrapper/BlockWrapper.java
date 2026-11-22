@@ -297,6 +297,11 @@ public class BlockWrapper implements IBlock{
 	}
 
 	@Override
+	public String getClaimAccessLevel(){
+		return FactionsInterop.getClaimAccessLevel(level.getMCLevel(), pos);
+	}
+
+	@Override
 	public String getName(){
 		return BuiltInRegistries.BLOCK.getKey(block).toString();
 	}

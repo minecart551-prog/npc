@@ -41,6 +41,8 @@ public class FactionsInterop {
 	private static Method userGet, userGetFaction;
 	private static Method factionGet, factionGetByName, factionGetName, factionGetID, factionIsMutualAllies, factionGetRelationship;
 	private static Field relationshipStatus;
+	private static Field userRankField;
+	private static Field claimAccessLevelField;
 
 	/** @return true when the factions mod is present on this instance */
 	public static boolean isAvailable() {
@@ -77,6 +79,10 @@ public class FactionsInterop {
 
 			// fail early if the relationship status field was renamed
 			relationshipStatus = relationship.getField("status");
+
+			// user rank + claim access level (both User.Rank enums)
+			userRankField = user.getField("rank");
+			claimAccessLevelField = claim.getField("accessLevel");
 
 			available = true;
 		} catch (Throwable t) {
@@ -142,6 +148,87 @@ public class FactionsInterop {
 		} catch (Throwable t) {
 			logOnce(t);
 			return false;
+		}
+	}
+
+	/**
+	 * @return the rank name (OWNER/LEADER/COMMANDER/MEMBER/GUEST) of the player
+	 *         in their faction, or null when factionless / mod missing
+	 */
+	public static String getPlayerRank(ServerPlayer player) {
+		try {
+			if (player == null || !isAvailable())
+				return null;
+			Object user = userGet.invoke(null, player.getUUID());
+			if (user == null)
+				return null;
+			Object rank = userRankField.get(user);
+			return rank == null ? null : ((Enum<?>) rank).name();
+		} catch (Throwable t) {
+			logOnce(t);
+			return null;
+		}
+	}
+
+	/**
+	 * @return the access level (minimum rank) required to interact with the
+	 *         claim at this position, or null when unclaimed / mod missing
+	 */
+	public static String getClaimAccessLevel(Level level, BlockPos pos) {
+		try {
+			if (level == null || pos == null || level.isClientSide || !isAvailable())
+				return null;
+			String dimension = level.dimension().location().toString();
+			Object claim = claimGet.invoke(null, pos.getX() >> 4, pos.getZ() >> 4, dimension);
+			if (claim == null)
+				return null;
+			Object al = claimAccessLevelField.get(claim);
+			return al == null ? null : ((Enum<?>) al).name();
+		} catch (Throwable t) {
+			logOnce(t);
+			return null;
+		}
+	}
+
+	/**
+	 * @return true if the player may edit (stock/price) a shop in this chunk,
+	 *         following the factions mod's claim access level rules.
+	 *         Ops always allowed; unclaimed chunks allow everyone.
+	 */
+	public static boolean canEditClaim(ServerPlayer player, Level level, BlockPos pos) {
+		try {
+			if (player == null)
+				return false;
+			if (player.hasPermissions(4))
+				return true;
+			if (!isAvailable())
+				return true;
+			String claimFaction = getClaimingFaction(level, pos);
+			String playerFaction = getPlayerFaction(player);
+			if (claimFaction == null)
+				return true; // unclaimed
+			if (playerFaction == null || !playerFaction.equals(claimFaction))
+				return false;
+			String userRank = getPlayerRank(player);
+			String accessLevel = getClaimAccessLevel(level, pos);
+			if (userRank == null || accessLevel == null)
+				return false;
+			return rankOrdinal(userRank) >= rankOrdinal(accessLevel);
+		} catch (Throwable t) {
+			logOnce(t);
+			return false;
+		}
+	}
+
+	private static int rankOrdinal(String name) {
+		// User.Rank order: GUEST, MEMBER, COMMANDER, LEADER, OWNER
+		switch (name) {
+			case "GUEST": return 0;
+			case "MEMBER": return 1;
+			case "COMMANDER": return 2;
+			case "LEADER": return 3;
+			case "OWNER": return 4;
+			default: return -1;
 		}
 	}
 

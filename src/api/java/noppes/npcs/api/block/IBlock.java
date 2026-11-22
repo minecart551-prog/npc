@@ -81,6 +81,12 @@ public interface IBlock {
 	 * the Factions mod is not installed.
 	 */
 	public String getClaimingFaction();
+
+	/**
+	 * @return the access level (minimum rank) required to interact with the
+	 *         claim this block is in, or null when unclaimed.
+	 */
+	public String getClaimAccessLevel();
 		
 	public IWorld getWorld();
 	
