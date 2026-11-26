@@ -36,8 +36,8 @@ import java.util.List;
 public class BlockScriptedSurvival extends BlockScripted {
 
 	public BlockScriptedSurvival() {
-		// Fast to break by hand and drops without requiring a pickaxe
-		super(Block.Properties.of().mapColor(MapColor.STONE).strength(0.5F, 1.0F).sound(SoundType.STONE));
+		// Very fast to break by hand and drops without requiring a pickaxe
+		super(Block.Properties.of().mapColor(MapColor.STONE).strength(0.05F, 0.1F).sound(SoundType.STONE));
 	}
 
 	@Override
