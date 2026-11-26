@@ -50,7 +50,11 @@ public class BlockScripted extends BlockInterface {
     public static final VoxelShape AABB = Shapes.create(new AABB(0.001f, 0.001f, 0.001f, 0.998f, 0.998f, 0.998f));
 
 	public BlockScripted() {
-		super(Block.Properties.copy(Blocks.STONE).sound(SoundType.STONE).strength(5.0F, 10));
+		this(Block.Properties.copy(Blocks.STONE).sound(SoundType.STONE).strength(5.0F, 10));
+	}
+
+	protected BlockScripted(Block.Properties properties) {
+		super(properties);
 	}
 
 	@Override

@@ -3,6 +3,9 @@ package noppes.npcs.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +34,11 @@ import java.util.List;
  * configuration survives being mined and placed again.
  */
 public class BlockScriptedSurvival extends BlockScripted {
+
+	public BlockScriptedSurvival() {
+		// Fast to break by hand and drops without requiring a pickaxe
+		super(Block.Properties.of().mapColor(MapColor.STONE).strength(0.5F, 1.0F).sound(SoundType.STONE));
+	}
 
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult ray) {
@@ -67,13 +75,14 @@ public class BlockScriptedSurvival extends BlockScripted {
 
 	@Override
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-		BlockEntity tile = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-		if (!(tile instanceof TileScripted))
-			return Collections.emptyList();
 		ItemStack stack = new ItemStack(CustomBlocks.scripted_survival_item);
-		CompoundTag tag = ((TileScripted) tile).saveWithoutMetadata();
-		if (!tag.isEmpty())
-			stack.addTagElement("BlockEntityTag", tag);
+		// Always drop the item; carry the script along if the block entity is available
+		BlockEntity tile = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+		if (tile instanceof TileScripted) {
+			CompoundTag tag = ((TileScripted) tile).saveWithoutMetadata();
+			if (!tag.isEmpty())
+				stack.addTagElement("BlockEntityTag", tag);
+		}
 		return Collections.singletonList(stack);
 	}
 }
